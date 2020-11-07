@@ -14,6 +14,8 @@ let board = [
   ['','',''],
   ['','','']
 ];
+let gameover = false;
+let move = false;
 
 // is called when a square is clicked. "this" = element here
 const handleClick = (element) => {
@@ -21,23 +23,149 @@ const handleClick = (element) => {
   // this prevents an X being changed to an O
   if(!document.getElementById(element.id).innerHTML){
     addMarker(element.id)
-    updateBoard(element.id)
-    checkForWin()
+    move = false;
+    setTimeout(()=> {
+        computerTurn();
+    }, 600)
   }
 }
 
+const computerTurn = () => {
+  if (gameover === false) {
+      computerLogic();
+      while (move === false) {
+          let row = Math.floor(Math.random()*3)
+          let col = Math.floor(Math.random()*3)
+          if (board[row][col] === '') {
+              addMarker(row + '-' + col);
+              move = true;
+          }
+      }
+  }
+}
+
+const computerLogic = () => {
+  //column win
+  if (move === false) {
+    let colOfX = 0;
+    for(let i = 0; i < 3; i++) {
+      if ((board[0][i] === 'O' && board[1][i] ==='O') || (board[1][i] === 'O' && board[2][i] ==='O') || (board[0][i] === 'O' && board[2][i] ==='O')) {
+        colOfX = i;
+        for(let x = 0; x < 3; x++) {
+        let col = colOfX;
+        if (board[x][col] === '') {
+          addMarker(x + '-' + col);
+          move = true;
+          }
+        }
+      }
+    }
+  }  
+  //row win
+  if (move === false) {
+    let rowOfX = 0;
+    for(let i = 0; i < 3; i++) {
+      if ((board[i][0] === 'O' && board[i][1] ==='O') || (board[i][1] === 'O' && board[i][2] ==='O') || (board[i][0] === 'O' && board[i][2] === 'O')) {
+        rowOfX = i;
+        for(let x = 0; x < 3; x++) {
+        let row = rowOfX;
+        if (board[row][x] === '') {
+          addMarker(row + '-' + x);
+          move = true;
+          }
+        }
+      }
+    }
+  }  
+  //diagonal win
+    if (move === false) {
+    if ((board[0][0] === 'O' && board[1][1] ==='O') || (board[1][1] === 'O' && board[2][2] ==='O') || (board[0][0] === 'O' && board[2][2] ==='O')) {
+      for (let i = 0; i < 3; i++) {
+        if (board[i][i] === '') {
+          addMarker(i + '-' + i);
+          move = true;
+          }
+        }
+     }
+    } 
+    if (move === false) {
+      if ((board[2][0] === 'O' && board[1][1] ==='O') || (board[1][1] === 'O' && board[0][2] ==='O') || (board[2][0] === 'O' && board[0][2] ==='O')) {
+           let y = 2;
+           for (let i = 0; i < 3; i++) {
+             if (board[y][i] === '') {
+             addMarker(y + '-' + i);
+             move = true;
+           }
+           y = y - 1;
+         }
+      }
+    }
+       
+  //column block
+  if (move === false) {
+    let colOfX = 0;
+    for(let i = 0; i < 3; i++) {
+      if ((board[0][i] === 'X' && board[1][i] ==='X') || (board[1][i] === 'X' && board[2][i] ==='X') || (board[0][i] === 'X' && board[2][i] ==='X')) {
+        colOfX = i;
+        for(let x = 0; x < 3; x++) {
+        let col = colOfX;
+        if (board[x][col] === '') {
+          addMarker(x + '-' + col);
+          move = true;
+          }
+        }
+      }
+    }
+  }  
+  //row block
+  if (move === false) {
+    let rowOfX = 0;
+    for(let i = 0; i < 3; i++) {
+      if ((board[i][0] === 'X' && board[i][1] ==='X') || (board[i][1] === 'X' && board[i][2] ==='X') || (board[i][0] === 'X' && board[i][2] === 'X')) {
+        rowOfX = i;
+        for(let x = 0; x < 3; x++) {
+        let row = rowOfX;
+        if (board[row][x] === '') {
+          addMarker(row + '-' + x);
+          move = true;
+          }
+        }
+      }``
+    }
+  }  
+  //diagonal block
+  if (move === false) {
+    if ((board[0][0] === 'X' && board[1][1] ==='X') || (board[1][1] === 'X' && board[2][2] ==='X') || (board[0][0] === 'X' && board[2][2] ==='X')) {
+      for (let i = 0; i < 3; i++) {
+        if (board[i][i] === '') {
+          addMarker(i + '-' + i);
+          move = true;
+         }
+      }
+    }
+  }
+  if (move === false) {
+    if ((board[2][0] === 'X' && board[1][1] ==='X') || (board[1][1] === 'X' && board[0][2] ==='X') || (board[2][0] === 'X' && board[0][2] ==='X')) {
+          let y = 2;
+          for (let i = 0; i < 3; i++) {
+            if (board[y][i] === '') {
+            addMarker(y + '-' + i);
+            move = true;
+          }
+          y = y - 1;
+        }
+    }
+  } 
+}
+
 const addMarker = (id) => {
-  console.log(`We'll place a mark on square: ${id}`)
-  // @TODO, Mix & Match. 
-  // You will need the following pieces:
-  
-  // = currentMarker
-  // .getElementById(id)
-  // document
-  // .innerHTML 
-  
-  // Arrange the above pieces into one a single line of code
-  // to add an X or O to the board to the DOM so it can be scene on the screen.
+    console.log(`We'll place a mark on square: ${id}`)
+    document.getElementById(id).innerHTML = currentMarker;
+    const row = parseInt(id.charAt(0))
+    const column = parseInt(id.charAt(2)) 
+    board[row][column] = currentMarker
+    console.log(board)
+    checkForWin()
 }
 
 // passes the element's id attribute from HTML to be used
@@ -57,23 +185,70 @@ const checkForWin = () => {
   // calls each checkForWin possibility and if any are true gives a page alert,
   if(horizontalWin() || verticalWin() || diagonalWin()) {
     // **BONUS** you could make the dismissal of this alert window reset the board...
-    window.alert(`Player ${currentMarker} won!`)
-  } else {
-    // if no win, change the marker from X to O, or O to X for the next player.
+    gameover = true;
+    setTimeout(()=> {
+        window.alert(`Player ${currentMarker} won!`)
+    }, 400)
+    } else if (nobodyWins()) {
+      gameover = true;
+      setTimeout(()=> {
+        window.alert('It\'s a tie!')
+      }, 400)
+    } else {
+      // if no win, change the marker from X to O, or O to X for the next player.
     changeMarker()
   }
 }
 
+
 const horizontalWin = () => {
   // @TODO, Your code here: to check for horizontal wins
+  if((board[0][0] === 'X' && board[0][1] === 'X' && board[0][2] === 'X') || 
+    (board[0][0] === 'O' && board[0][1] === 'O' && board[0][2] === 'O') ||
+    (board[1][0] === 'X' && board[1][1] === 'X' && board[1][2] === 'X') || 
+    (board[1][0] === 'O' && board[1][1] === 'O' && board[1][2] === 'O') ||
+    (board[2][0] === 'X' && board[2][1] === 'X' && board[2][2] === 'X') || 
+    (board[2][0] === 'O' && board[2][1] === 'O' && board[2][2] === 'O')){ 
+      return true;
+    }
 }
 
 const verticalWin = () => {
   // @TODO, Your code here: to check for vertical wins
+  if((board[0][0] === 'X' && board[1][0] === 'X' && board[2][0] === 'X') || 
+    (board[0][0] === 'O' && board[1][0] === 'O' && board[2][0] === 'O') ||
+    (board[0][1] === 'X' && board[1][1] === 'X' && board[2][1] === 'X') || 
+    (board[0][1] === 'O' && board[1][1] === 'O' && board[2][1] === 'O') ||
+    (board[0][2] === 'X' && board[1][2] === 'X' && board[2][2] === 'X') || 
+    (board[0][2] === 'O' && board[1][2] === 'O' && board[2][2] === 'O')){
+    return true;
+    } 
 }
 
 const diagonalWin = () => {
   // @TODO, Your code here: to check for diagonal wins
+  if((board[0][0] === 'X' && board[1][1] === 'X' && board[2][2] === 'X') || 
+    (board[0][0] === 'O' && board[1][1] === 'O' && board[2][2] === 'O') ||
+    (board[0][2] === 'X' && board[1][1] === 'X' && board[2][0] === 'X') || 
+    (board[0][0] === 'O' && board[1][1] === 'O' && board[2][2] === 'O') ||
+    (board[0][2] === 'X' && board[1][1] === 'X' && board[2][2] === 'X') ||
+    (board[0][2] === 'O' && board[1][1] === 'O' && board[2][2] === 'O')){
+    return true;
+    } 
+}
+
+const nobodyWins = () => {
+  if((board[0][0] === 'X' || board[0][0] === 'O') && 
+    (board[0][1] === 'X' || board[0][1] === 'O') &&
+    (board[0][2] === 'X' || board[0][2] === 'O') &&
+    (board[1][0] === 'X' || board[1][0] === 'O') &&
+    (board[1][1] === 'X' || board[1][1] === 'O') &&
+    (board[1][2] === 'X' || board[1][2] === 'O') &&
+    (board[2][0] === 'X' || board[2][0] === 'O') &&
+    (board[2][1] === 'X' || board[2][1] === 'O') &&
+    (board[2][2] === 'X' || board[2][2] === 'O')){
+    return true;
+    } 
 }
 
 const changeMarker = () => {
@@ -95,6 +270,12 @@ const resetBoard = () => {
   }
   
   // @TODO, Your code here: make sure to reset the array of arrays to empty for a new game
+  board = [
+    ['','',''],
+    ['','',''],
+    ['','','']
+  ];
+  location.reload();
 }
 
 // **BONUSES**
